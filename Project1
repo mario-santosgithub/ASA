@@ -31,7 +31,7 @@ int main() {
 // reads the input and creates a vector with the numbers given
 std::vector<std::vector<int>> initialize(int problem) {
 
-    std::string c;
+    std::string c, str;
     int fNumber;
     std::vector<std::vector<int>> vector;
 
@@ -39,25 +39,37 @@ std::vector<std::vector<int>> initialize(int problem) {
 
         std::cin >> fNumber;
 
-        std::getline(std::cin, c);
+        std::getline(std::cin, c); // " n1 n2 n3 n4"
         size = (c.length()) / 2 + 1; // numbers to read (first already read)
 
         std::vector<std::vector<int>> numbers(problem, std::vector<int>(size, 0));
         numbers[p][0] = fNumber;
 
-        int pos = 1;
-        for (int i=1; i<size*2-1; i+=2) { // string's length -1 because of \n
+        int pos = 1, digits=0;
 
-            numbers[p][pos] = c[i] - '0';
-            pos++; 
+        int strPos=0;
+        for(int i=1; i < c.length(); i++) { // while we dont read the rest of the numbers
+        
+            if (isdigit(c[i])) {
+                str += c[i]; // if it's a number, add it
+                std::cout << "str:" << str << std::endl;
+            }
+            else {
+                numbers[p][pos] = stoi(str);
+                pos++;
+                str = "";
+            }
         }
+        numbers[p][pos] = stoi(str);
         vector = numbers;
     }
+
     return vector;
 }
 
 
 void problemOne(std::vector<std::vector<int>> numbers) {  //   numeros = (length + 1) / 2
+
 
     int maxlength = 0, nSoluctions = 0;
     for (int i=0; i < size-1; i++) {
@@ -65,13 +77,11 @@ void problemOne(std::vector<std::vector<int>> numbers) {  //   numeros = (length
             maxlength++;
         }
     }
-    printf("maxlength: %d\n", maxlength);
     maxlength++;
 
     if(maxlength == size) { std::cout << maxlength << " " << 1 << std::endl; return; }
     if(maxlength == 1) { std::cout << maxlength << " " << size << std::endl; return; }
 
-    printf("1\n");
     for(int i=0; i < size-1; i++) {
         int bigger = 0;
         for(int j=i; j < size; j++) {
