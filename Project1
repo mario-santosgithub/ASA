@@ -4,11 +4,14 @@
 
 // prototypes
 void problemOne(std::vector<std::vector<int>> numbers);
+int getMaxLength(std::vector<std::vector<int>> numbers);
 std::vector<std::vector<int>> initialize(int problem);
+int getSolutions(std::vector<std::vector<int>> numbers, int i, int j, int length);
+int getSolutionsAux(std::vector<std::vector<int>> numbers, int i, int j, int length);
 
 
 //global variables
-int size;
+int size, maxlength;
 
 // main function
 int main() {
@@ -68,32 +71,64 @@ std::vector<std::vector<int>> initialize(int problem) {
 }
 
 
-void problemOne(std::vector<std::vector<int>> numbers) {  //   numeros = (length + 1) / 2
+int getMaxLength(std::vector<std::vector<int>> numbers) {
 
-
-    int maxlength = 0, nSoluctions = 0;
+    int maxlength = 1, nSoluctions = 0;
     for (int i=0; i < size-1; i++) {
         if (numbers[0][i] < numbers[0][i+1]) {
             maxlength++;
         }
     }
-    maxlength++;
+    return maxlength;
+}
 
-    if(maxlength == size) { std::cout << maxlength << " " << 1 << std::endl; return; }
-    if(maxlength == 1) { std::cout << maxlength << " " << size << std::endl; return; }
 
-    for(int i=0; i < size-1; i++) {
-        int bigger = 0;
-        for(int j=i; j < size; j++) {
-
-            if(numbers[0][i] < numbers[0][j]) {
-                bigger++;
-            }
-        }
-        if(bigger >= maxlength-1) {
-            nSoluctions++;
-        }
-        printf("n: %d, bigger: %d\n", numbers[0][i], bigger);
+int getSolutions(std::vector<std::vector<int>> numbers, int i, int j, int length) {
+    printf("length: %d\n", length);
+    printf("i: %d, j: %d\n", i, j);
+    if (length == maxlength ) { return 1; } // save
+    if (i < 0 || j == size) { return 0; }
+    printf("n1: %d, n2: %d\n", numbers[0][i], numbers[0][j]);
+    int n;
+    std::cin >> n;
+    if (numbers[0][i] < numbers[0][j]) {
+        printf("CHAMOU\n");
+        while (i < j) { i++; }
+        return getSolutions(numbers, i, j+1, length+1);
     }
+    else {
+        return getSolutions(numbers, i, j+1, length) + getSolutionsAux(numbers, i-1, j, --length);
+    }
+}
+
+int getSolutionsAux(std::vector<std::vector<int>> numbers, int i, int j, int length) {
+
+    printf("aux - n1: %d, n2: %d\n", numbers[0][i], numbers[0][j]);
+
+    if (i < 0) {
+        return 0;
+    }
+    if(numbers[0][i] < numbers[0][j]) { // fix the index
+        while (i < j) {
+            i++;
+        }
+        return getSolutions(numbers, i, j+1, ++length);
+    }
+    return 0;
+}
+
+void problemOne(std::vector<std::vector<int>> numbers) {  //   numeros = (length + 1) / 2
+
+    maxlength = getMaxLength(numbers);
+    printf("maxlength = %d\n", maxlength);
+
+
+    int nSoluctions = 0;
+    for(int i=0; i < size; i++) {
+        int j = i+1;
+        nSoluctions += getSolutions(numbers, i, j, 1);
+    }
+    printf("Soluctions: %d\n", nSoluctions);
+
     std::cout << maxlength << " " << nSoluctions << std::endl;
 }
