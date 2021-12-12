@@ -4,13 +4,14 @@
 
 // Prototypes
 void problemOne(std::vector<std::vector<int>> numbers);
-int getMaxLength(std::vector<std::vector<int>> numbers, std::vector<int> aux);
+void getMaxLength(std::vector<std::vector<int>> numbers);
 std::vector<std::vector<int>> initialize();
 int getSolutions(std::vector<std::vector<int>> numbers, int i, int j, int length, std::vector<int> aux);
 std::vector<int> addElement(std::vector<int> aux, int v);
+void problemTwo(std::vector<std::vector<int>> numbers1, std::vector<std::vector<int>> numbers2);
 
 // Global variables
-int size=0, maxlength, problem;
+int size=0, maxlength=0, problem;
 std::vector<std::vector<int>> res;
 
 // Main function
@@ -20,7 +21,14 @@ int main() {
 
     if (problem == 1) {
         std::vector<std::vector<int>> numbers = initialize();
+        getMaxLength(numbers);
         problemOne(numbers);
+    }
+
+    if (problem == 2) {
+        std::vector<std::vector<int>> numbers1 = initialize();
+        std::vector<std::vector<int>> numbers2 = initialize();
+        problemTwo(numbers1, numbers2);
     }
 
     return 0;
@@ -57,9 +65,10 @@ std::vector<std::vector<int>> initialize() {
 }
 
 // gets the maxlength of the input
-int getMaxLength(std::vector<std::vector<int>> numbers, std::vector<int> aux) { // aux = {}
+void getMaxLength(std::vector<std::vector<int>> numbers) { // aux = {}
 
-    std::vector<int> maxlength;
+    std::vector<int> aux;
+    std::vector<int> maxlengthvector;
 
     for (int i=0; i < size; i++) {
         aux.clear();
@@ -73,17 +82,16 @@ int getMaxLength(std::vector<std::vector<int>> numbers, std::vector<int> aux) { 
             }
             else { j++; }               
         }
-        if (aux.size() > maxlength.size()) { maxlength = aux; }
+        if (aux.size() > maxlengthvector.size()) { maxlengthvector = aux; }
     }
 
-    return maxlength.size();
+    maxlength = maxlengthvector.size();
 }
 
 
 void problemOne(std::vector<std::vector<int>> numbers) {  //   numeros = (length + 1) / 2
 
     std::vector<int> aux;
-    maxlength = getMaxLength(numbers, aux);
 
     int nSoluctions = 0;
 
@@ -109,14 +117,19 @@ void problemOne(std::vector<std::vector<int>> numbers) {  //   numeros = (length
             }
         }
     }
-    std::cout << maxlength << " " << nSoluctions << std::endl;
+    printf("teste1\n");
+    for(std::vector<int> s1: numbers) {
+        for(int i: s1) { printf("%d ", i);} printf("\n");
+    }
+
+    if (problem == 1) { std::cout << maxlength << " " << nSoluctions << std::endl; }
     res.clear();
 }
 
 // find the solutions for the input according with the max length
 int getSolutions(std::vector<std::vector<int>> numbers, int i, int j, int length, std::vector<int> aux) {
 
-    if (aux.size() == maxlength ) {
+    if ((int)aux.size() == maxlength) {
 
         for (std::vector<int> m: res) {
             if (m == aux) { return 0; } // if the subsequence exists, return 0
@@ -140,4 +153,42 @@ int getSolutions(std::vector<std::vector<int>> numbers, int i, int j, int length
 std::vector<int> addElement(std::vector<int> aux, int v) {
     aux.push_back(v);
     return aux;
+}
+
+
+// funtion to solve problem 2
+void problemTwo(std::vector<std::vector<int>> numbers1, std::vector<std::vector<int>> numbers2) {
+    
+    getMaxLength(numbers1);
+    problemOne(numbers1);
+    int length1 = maxlength;
+    printf("teste 2\n");
+    printf("size n1: %ld", numbers1.size());
+    for(std::vector<int> s1: numbers1) {
+        for(int i: s1) { printf("%d ", i);} printf("\n");
+    }
+
+    getMaxLength(numbers2);
+    problemOne(numbers2);
+    int length2 = maxlength;
+
+    if(length1 > length2) { maxlength = length1; }
+    else { maxlength = length2; }
+
+    while (maxlength > 0) {
+        printf("ml: %d\n", maxlength);
+        
+        problemOne(numbers1);
+        problemOne(numbers2);
+
+        for (int i=0; i < numbers1.size(); i++) {
+            for(int j=0; j < numbers2.size(); j++) {
+                if (numbers1[i] == numbers2[j]) {
+                    std::cout << maxlength << std::endl;
+                    return;
+                }
+            } 
+        }
+    maxlength--;
+    }
 }
