@@ -9,9 +9,10 @@ std::vector<std::vector<int>> initialize();
 int getSolutions(std::vector<std::vector<int>> numbers, int i, int j, int length, std::vector<int> aux);
 std::vector<int> addElement(std::vector<int> aux, int v);
 void problemTwo(std::vector<std::vector<int>> numbers1, std::vector<std::vector<int>> numbers2);
+std::vector<std::vector<int>> res1, res2; 
 
 // Global variables
-int size=0, maxlength=0, problem;
+int size=0, maxlength=0, problem, length1, length2;
 std::vector<std::vector<int>> res;
 
 // Main function
@@ -27,7 +28,14 @@ int main() {
 
     if (problem == 2) {
         std::vector<std::vector<int>> numbers1 = initialize();
+        getMaxLength(numbers1);
+        length1 = maxlength;
         std::vector<std::vector<int>> numbers2 = initialize();
+        getMaxLength(numbers2);
+        length2 = maxlength;
+
+        if(length1 > length2) { maxlength = length2; }
+        else { maxlength = length1; }
         problemTwo(numbers1, numbers2);
     }
 
@@ -87,7 +95,6 @@ void getMaxLength(std::vector<std::vector<int>> numbers) { // aux = {}
             }
             else { j++; }               
         }
-        printf("ml; %ld\n",aux.size());
         if (aux.size() > maxlengthvector.size()) { maxlengthvector = aux; }
     }
 
@@ -98,13 +105,14 @@ void getMaxLength(std::vector<std::vector<int>> numbers) { // aux = {}
 void problemOne(std::vector<std::vector<int>> numbers) {
 
     std::vector<int> aux;
+    res.clear();
 
     int nSoluctions = 0;
     //maxlength = 2;
 
     for (int i=0; i < size; i++) {
         int length = 1, b=1; // b represents a boolean b=0 (FALSE) b=1 (TRUE)
-        aux.clear();   // clears the vector
+        
 
         if (length == maxlength) { // if the max length is 1
             
@@ -120,8 +128,11 @@ void problemOne(std::vector<std::vector<int>> numbers) {
             aux.push_back(numbers[0][i]);
             nSoluctions += getSolutions(numbers, i, i+1, length, aux);
         }
+        aux.clear();   // clears the vector
     }
     if (problem == 1) { std::cout << maxlength << " " << nSoluctions << std::endl;}
+
+    printf("size: %ld\n", res.size());
 
     printf("sk: \n");
     for (std::vector<int> s1: res) {
@@ -135,7 +146,7 @@ void problemOne(std::vector<std::vector<int>> numbers) {
 // find the solutions for the input according with the max length
 int getSolutions(std::vector<std::vector<int>> numbers, int i, int j, int length, std::vector<int> aux) {
 
-    if ((int)aux.size() == maxlength) {
+    if (length == maxlength) {
 
         for (std::vector<int> m: res) {
             if (m == aux) { return 0; } // if the subsequence exists, return 0
@@ -165,58 +176,17 @@ std::vector<int> addElement(std::vector<int> aux, int v) {
 // funtion to solve problem 2
 void problemTwo(std::vector<std::vector<int>> numbers1, std::vector<std::vector<int>> numbers2) {
     
-    std::vector<std::vector<int>> res1, res2; 
-
-    getMaxLength(numbers1);
-    int length1 = maxlength;
-
-
-    getMaxLength(numbers2);
-    int length2 = maxlength;
-
-
-    if(length1 > length2) { maxlength = length2; }
-    else { maxlength = length1; }
-
-    while (maxlength > 0) {
-
-        problemOne(numbers1);
-        res1 = res;
-
-        printf("s1: \n");
-        for (std::vector<int> s1: res) {
-            for(int i: s1) {
-                printf("%d ", i);
-            }
-        printf("\n");
-        }
-
-        res.clear();
-
-        problemOne(numbers2);
-        printf("size: %ld\n", res.size());
-        res2 = res;
-        
-
-        printf("s2: \n");
-        for (std::vector<int> s1: res) {
-            for(int i: s1) {
-                printf("%d ", i);
-            }
-            printf("\n");
-        }
-
-        res.clear();
-
     
-        for (std::vector<int> s1: res1) {
-            for (std::vector<int> s2: res2) {
-                if (s1 == s2) {
-                    std::cout << maxlength << std::endl;
-                    return;
-                }
-            } 
+    problemOne(numbers1);
+    res1 = res;
+
+
+    /*printf("s1: \n");
+    for (std::vector<int> s1: res) {
+        for(int i: s1) {
+            printf("%d ", i);
         }
-    maxlength--;
-    }
+    printf("\n");
+    }*/
+       
 }
