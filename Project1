@@ -3,16 +3,14 @@
 #include <string>
 
 // Prototypes
-void problemOne(std::vector<std::vector<int>> numbers);
-void getMaxLength(std::vector<std::vector<int>> numbers);
-std::vector<std::vector<int>> initialize();
-int getSolutions(std::vector<std::vector<int>> numbers, int i, int j, int length, std::vector<int> aux);
-std::vector<int> addElement(std::vector<int> aux, int v);
-void problemTwo(std::vector<std::vector<int>> numbers1, std::vector<std::vector<int>> numbers2);
-std::vector<std::vector<int>> res1, res2; 
+void problemOne(std::vector<int> numbers);
+std::vector<int> initialize();
+int getSolutions(std::vector<int> numbers, int i, int j, int length);
+void problemTwo(std::vector<int> numbers1, std::vector<int> numbers2);
+
 
 // Global variables
-int size=0, maxlength=0, problem, length1, length2;
+int size, maxlength=0, problem, solutions;
 std::vector<std::vector<int>> res;
 
 // Main function
@@ -21,22 +19,9 @@ int main() {
     std::cin >> problem; // reads the problem (first input line)
 
     if (problem == 1) {
-        std::vector<std::vector<int>> numbers = initialize();
-        getMaxLength(numbers);
+        std::vector<int> numbers = initialize();
+        size = numbers.size();
         problemOne(numbers);
-    }
-
-    if (problem == 2) {
-        std::vector<std::vector<int>> numbers1 = initialize();
-        getMaxLength(numbers1);
-        length1 = maxlength;
-        std::vector<std::vector<int>> numbers2 = initialize();
-        getMaxLength(numbers2);
-        length2 = maxlength;
-
-        if(length1 > length2) { maxlength = length2; }
-        else { maxlength = length1; }
-        problemTwo(numbers1, numbers2);
     }
 
     return 0;
@@ -44,19 +29,17 @@ int main() {
 }
 
 // fills the first line of the matrix with the input numbers
-std::vector<std::vector<int>> initialize() {
+std::vector<int> initialize() {
 
     std::string c, str = "";
     int fNumber; // first number needs to be read to use getline()
-    std::vector<int> aux; // an auxiliar vector
-    std::vector<std::vector<int>> numbers;
+    std::vector<int> numbers;
 
     std::cin >> fNumber;
     std::getline(std::cin, c); // reads the rest of the input c = " n2 n3 nk"
-    aux.push_back(fNumber);
+    numbers.push_back(fNumber);
 
-    if (c.size() == 0) { size = 1;
-        numbers.push_back(aux);
+    if (c.size() == 0) {
         return numbers;
         }
 
@@ -67,126 +50,41 @@ std::vector<std::vector<int>> initialize() {
         if(isspace(c[i]) == 0) { str += c[i]; } 
 
         else { 
-            aux.push_back(stoi(str));
+            numbers.push_back(stoi(str));
             str = "";
         }
     }
-    aux.push_back(stoi(str));
-    numbers.push_back(aux); // insert the numbers on the matrix
-    size = aux.size();
+    numbers.push_back(stoi(str));
     return numbers;    
 }
 
-// gets the maxlength of the input
-void getMaxLength(std::vector<std::vector<int>> numbers) { // aux = {}
 
-    std::vector<int> aux;
-    std::vector<int> maxlengthvector;
+void problemOne(std::vector<int> numbers) {
 
-    for (int i=0; i < size; i++) {
-        aux.clear();
-        aux.push_back(numbers[0][i]);
-        int k = i, j=i+1;
-        while (j != size) {
-            if(numbers[0][k] < numbers[0][j]) {
-                aux.push_back(numbers[0][k]);
-                k = j;
-                j = j+1;
-            }
-            else { j++; }               
-        }
-        if (aux.size() > maxlengthvector.size()) { maxlengthvector = aux; }
-    }
-
-    maxlength = maxlengthvector.size();
-}
-
-
-void problemOne(std::vector<std::vector<int>> numbers) {
-
-    std::vector<int> aux;
-    res.clear();
-
-    int nSoluctions = 0;
-    //maxlength = 2;
-
-    for (int i=0; i < size; i++) {
-        int length = 1, b=1; // b represents a boolean b=0 (FALSE) b=1 (TRUE)
-        
-
-        if (length == maxlength) { // if the max length is 1
-            
-            aux.push_back(numbers[0][i]);
-            
-            for(std::vector<int> k: res) {
-                if (k == aux) { b = 0; }
-            }
-
-            if(b == 1) { res.push_back(aux); nSoluctions++; }
-        }
-        else {
-            aux.push_back(numbers[0][i]);
-            nSoluctions += getSolutions(numbers, i, i+1, length, aux);
-        }
-        aux.clear();   // clears the vector
-    }
-    if (problem == 1) { std::cout << maxlength << " " << nSoluctions << std::endl;}
-
-    printf("size: %ld\n", res.size());
-
-    printf("sk: \n");
-    for (std::vector<int> s1: res) {
-        for(int i: s1) {
-            printf("%d ", i);
-        }
-        printf("\n");
-    }
+    int carry, length = 1;
+    
+    carry += getSolutions(numbers, 0, 1, length);
+    
+    std::cout << maxlength << " " << solutions << std::endl;
 }
 
 // find the solutions for the input according with the max length
-int getSolutions(std::vector<std::vector<int>> numbers, int i, int j, int length, std::vector<int> aux) {
+int getSolutions(std::vector<int> numbers, int i, int j, int length) {
 
-    if (length == maxlength) {
-
-        for (std::vector<int> m: res) {
-            if (m == aux) { return 0; } // if the subsequence exists, return 0
-        }
-
-        res.push_back(aux);
+    //printf("n1: %d, n2: %d, length: %d\n", numbers[i], numbers[j], length);
+    if ((length > maxlength) && (j == size)) {
+        maxlength = length;
+        solutions = 1;
         return 1; 
     }
+    if (length == maxlength) { solutions++; }
 
     if (i < 0 || j == size) { return 0; }
 
-    if (numbers[0][i] < numbers[0][j]) {
-        return getSolutions(numbers, j, j+1, length+1, addElement(aux, numbers[0][j])) + getSolutions(numbers, i, j+1, length, aux);
+    if (numbers[i] < numbers[j]) {
+        return getSolutions(numbers, j, j+1, length+1);
     }
     else {
-        return getSolutions(numbers, i, j+1, length, aux);
+        return getSolutions(numbers, i, j+1, length) + getSolutions(numbers, i-1, j, length-1);
     }
-}
-
-// function used in the recursion above to add elements in aux
-std::vector<int> addElement(std::vector<int> aux, int v) {
-    aux.push_back(v);
-    return aux;
-}
-
-
-// funtion to solve problem 2
-void problemTwo(std::vector<std::vector<int>> numbers1, std::vector<std::vector<int>> numbers2) {
-    
-    
-    problemOne(numbers1);
-    res1 = res;
-
-
-    /*printf("s1: \n");
-    for (std::vector<int> s1: res) {
-        for(int i: s1) {
-            printf("%d ", i);
-        }
-    printf("\n");
-    }*/
-       
 }
