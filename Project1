@@ -11,7 +11,7 @@ void problemTwo(std::vector<int> numbers1, std::vector<int> numbers2);
 
 // Global variables
 int size, maxlength=0, problem, solutions;
-std::vector<std::vector<int>> res;
+std::vector<int> vct1;
 
 // Main function
 int main() {
@@ -62,8 +62,11 @@ std::vector<int> initialize() {
 void problemOne(std::vector<int> numbers) {
 
     int carry, length = 1;
-    
-    carry += getSolutions(numbers, 0, 1, length);
+    vct1.assign(size, 1);
+
+    for (int i=0; i < size; i++) {
+        carry += getSolutions(numbers, i, i+1, length);
+    }
     
     std::cout << maxlength << " " << solutions << std::endl;
 }
@@ -71,20 +74,22 @@ void problemOne(std::vector<int> numbers) {
 // find the solutions for the input according with the max length
 int getSolutions(std::vector<int> numbers, int i, int j, int length) {
 
-    //printf("n1: %d, n2: %d, length: %d\n", numbers[i], numbers[j], length);
     if ((length > maxlength) && (j == size)) {
         maxlength = length;
         solutions = 1;
         return 1; 
     }
-    if (length == maxlength) { solutions++; }
+    if ((length == maxlength) && (j == size)) { solutions++; }
 
-    if (i < 0 || j == size) { return 0; }
+    // fazer testes para o output 6 4 com esta condição de length+1 <vct1[j] && j == size (maybe modificar o j==size)
+    if (i < 0 || j == size || length < vct1[i]) { /*printf("return\n");*/ return 0; }
+    if (numbers[i] >= numbers[j]) {printf("%d %d\n ", numbers[i], numbers[j]);}
 
-    if (numbers[i] < numbers[j]) {
-        return getSolutions(numbers, j, j+1, length+1);
+    if (numbers[i] < numbers[j] && length+1 >= vct1[j]) {
+        vct1[j] = length+1;
+        return getSolutions(numbers, j, j+1, length+1) + getSolutions(numbers, i, j+1, length);
     }
     else {
-        return getSolutions(numbers, i, j+1, length) + getSolutions(numbers, i-1, j, length-1);
+        return getSolutions(numbers, i, j+1, length);
     }
 }
