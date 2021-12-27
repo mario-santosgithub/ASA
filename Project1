@@ -1,93 +1,189 @@
 #include <iostream>
 #include <vector>
-#include <string>
 #include <sstream>
+#include <string>
+
+
+struct P1 {
+    int lastElement;
+    int length;
+};
 
 // Prototypes
-void problemOne(std::vector<int> numbers);
-std::vector<int> initialize();
-int getSolutions(std::vector<int> numbers, int i, int j, int length);
-void problemTwo(std::vector<int> numbers1, std::vector<int> numbers2);
+void problemOne();
+void getSolutionsP1(P1 number);
+void problemTwo();
+void getSolutionsP2(int number);
 
 
 // Global variables
-int size, maxlength=0, problem, solutions;
-std::vector<int> vct1;
+std::vector<P1> sublists;
+std::vector<int> firstInput, aux;
+std::vector<std::vector<int>> matrixP2;
+int maxLength = 0, counter=0, size1 = 1, size2 = 1;
 
 // Main function
 int main() {
-
+    int problem;
     std::cin >> problem; // reads the problem (first input line)
 
     if (problem == 1) {
-        std::vector<int> numbers = initialize();
-        size = numbers.size();
-        problemOne(numbers);
+        problemOne();
     }
-
+    else if (problem == 2) {
+        problemTwo();
+    }
     return 0;
-
 }
 
-// fills the first line of the matrix with the input numbers
-std::vector<int> initialize() {
+// Funtion to solve problem 1
+void problemOne() {
 
     int f;
-    std::vector<int> numbers;
-    std::cin >> f;
-    numbers.push_back(f);
-    std::string str;
+    P1 numberP1;
+    std::string str, temp;
     std::stringstream ss;
-    std::getline(std::cin, str);
 
+    std::cin >> f;
+    numberP1.lastElement = f;
+    numberP1.length = 1;
+    sublists.push_back(numberP1);
+
+    std::getline(std::cin, str);
     ss << str;
-  
-    /* Running loop till the end of the stream */
-    std::string temp;
-    int n;
+
+    maxLength = 1;
+    counter = 1;
+
+    if (str == "") { std::cout << maxLength << " " << counter << std::endl; return; }
+    
     while (!ss.eof()) {
   
         ss >> temp;
   
-        if (std::stringstream(temp) >> n)
-            numbers.push_back(n);
-  
+        if (std::stringstream(temp) >> f) {
+            numberP1.lastElement = f;
+            numberP1.length = 1;
+            getSolutionsP1(numberP1);
+        }
         temp = "";
     }
-    return numbers;    
+
+    std::cout << maxLength << " " << counter << std::endl;
+    return;    
 }
 
+void getSolutionsP1(P1 number) {
 
-void problemOne(std::vector<int> numbers) {
-
-    int carry, length = 1;
-    vct1.assign(size, 1);
-
-    for (int i=0; i < size; i++) {
-        carry += getSolutions(numbers, i, i+1, length);
+    //printf("number: %d\n", number.lastElement);
+    int added = -1;
+    if (number.lastElement <= sublists[0].lastElement) {
+        sublists.insert(sublists.begin(), number); 
+        size1++;
+        if (maxLength == number.length) { counter++; }
+        //printf("added\n");
+        return; 
     }
+
+    for (int i=size1-1; i >= 0; i--) {
+
+        if (number.lastElement > sublists[i].lastElement) {
+            if (added == -1 || sublists[i].length+1 >= added) {
+                //printf("maior\n");
+                number.length = sublists[i].length+1;
+                added = number.length; // adicionamos 7, e ficou com esta length armazenada agr em added 
+                //printf("added with lenght %d\n", number.length);
+                //printf("sublistELement: %d\n", sublists[i].lastElement);
+
+                size1++;
+            }
+            else {
+                break;
+            }
+
+            if (number.length > maxLength) { 
+                maxLength++;
+                counter = 1;
+                sublists.push_back(number);
+            }
+            else if (number.length == maxLength) {
+                counter++;
+                sublists.push_back(number);
+            }
+            else {
+                int j = size1-1;
+                while (number.length != sublists[j].length) {
+                    j--;
+                }
+                sublists.insert(sublists.begin()+j, number);
+
+
+                /*printf("n[i] %d\n", sublists[size-2].lastElement);
+                printf("number %d\n", number.lastElement);
+                numberP1 = sublists[size-2];
+                sublists[size-2] = number;
+                sublists[size-1] = numberP1;*/
+            }
+        }
+    }
+}
+
+void problemTwo() {
+
+    int f, value;
+    std::string str, temp;
+    std::stringstream ss;
+    std::cin >> f;
+    firstInput.push_back(f);
+
+    std::getline(std::cin, str);
+    ss << str;
     
-    std::cout << maxlength << " " << solutions << std::endl;
+    // receives the first input and stores it in a vector
+    while (!ss.eof()) {
+        ss >> temp;
+        if (std::stringstream(temp) >> f) {
+            firstInput.push_back(f);
+            size1++;
+        }
+        temp = "";
+    }
+
+    // second input
+    std::cin >> f;
+    if (f == firstInput[0]) { value = 1; }
+    else { value = 0; }
+    for (int i=0; i < size1-1; i++) {aux.push_back(value); }
+
+    matrixP2.push_back(aux);
+    aux.clear();
+
+
+    std::getline(std::cin, str);
+    ss << str;
+
+    while(!ss.eof()) {
+        ss >> temp;
+        if (std::stringstream(temp) >> f) {
+            getSolutionsP2(f);
+        }
+        temp = "";
+    }
+
+    std::cout << maxLength << std::endl;
+
 }
 
-// find the solutions for the input according with the max length
-int getSolutions(std::vector<int> numbers, int i, int j, int length) {
+void getSolutionsP2(int number) {
 
-    if ((length > maxlength) && (j == size)) {
-        maxlength = length;
-        solutions = 1;
-        return 1; 
-    }
-    if ((length == maxlength) && (j == size)) { solutions++; }
+    int value;
+    for (int i=0; i < size1-1; i++) {
 
-    // fazer testes para o output 6 4 com esta condição de length+1 <vct1[j] && j == size (maybe modificar o j==size)
-    if (i < 0 || j == size || length < vct1[i]) { /*printf("return\n");*/ return 0; }
-
-    if (numbers[i] < numbers[j] && length+1 >= vct1[j]) {
-        vct1[j] = length+1;
-        return getSolutions(numbers, j, j+1, length+1) + getSolutions(numbers, i, j+1, length);
+        if ((i == 0) && (number == ) { // first position
+        }
+        
     }
-    else {
-        return getSolutions(numbers, i, j+1, length);
-    }
+    matrixP2.push_back(aux);
+    aux.clear();
+    
 }
