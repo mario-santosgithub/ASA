@@ -2,6 +2,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 
 struct P1 {
@@ -177,11 +178,12 @@ void problemTwo() {
     while(!ss1.eof()) {
         ss1 >> temp;
         if (std::stringstream(temp) >> f) {
-            getSolutionsP2(f);
+            if(std::find(firstInput.begin(), firstInput.end(), f) != firstInput.end()) {
+                getSolutionsP2(f);
+                aux = aux2;
+                aux2.clear();
+            }
         }
-
-        aux = aux2;
-        aux2.clear();
         temp = "";
     }
 
@@ -202,35 +204,34 @@ int max(int n1, int n2) {
 
 void getSolutionsP2(int number) {
 
-    int value;
+    int value, added=0;
     for (int i=0; i < size1; i++) {
-
-        if (i == 0) { // first position
-            if ((aux[0] == 1) || (number == firstInput[i])) {
-                value = 1;
+        if (added == 0) {
+            if (i == 0) {
+                if (number == firstInput[i]) {
+                    value = 1;
+                    if (aux[i] == 0) {added = 1;}
+                }
+                else { value = aux[0]; }
             }
-            else { value = 0; }
-        }
-        else { 
-            if (number == firstInput[i] && number > firstInput[i-1]) {
-                value = aux[i-1] + 1;
+            else {
+                if (number == firstInput[i]) {
+                    if ((aux[i] == aux[i-1]) && (firstInput[i] > firstInput[i-1])) {
+                        value = aux[i-1] + 1;
+                        added = 1;
+                    }
+                    else if (aux[i] == aux[i-1]+1) { added = 1; }
+                    else {value = max(aux[i], aux2[i-1]); }
+                    
+                }
+                else {
+                    value = max(aux[i], aux2[i-1]);
+                }
             }
-            /*else if (number == firstInput[i]) {
-                value = aux[i-1] + 1;
-            }*/
-            else { value = max(aux2[i-1], aux[i]); }
         }
-
+        else {
+            value = max(aux[i], aux2[i-1]);
+        }
         aux2.push_back(value);
-    } 
-    /*printf("aux\n");
-    for (int k:aux) {
-        printf("%d ", k);
-    } 
-    printf("\n");
-    printf("aux2\n");
-    for (int k: aux2) {
-        printf("%d ", k);
     }
-    printf("\n");*/
 }
