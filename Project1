@@ -171,12 +171,13 @@ void problemTwo() {
         }
         temp = "";
     }
-    int final = 0;
-    for (int i=0; i<size1; i++)
-		if (aux[i] > final)
-		final = aux[i];
+    for (int i=0; i<size1; i++) {
+		if (aux[i] > maxLength) {
+            maxLength = aux[i];
+        }
+    }
 
-    std::cout << final << std::endl;
+    std::cout << maxLength << std::endl;
 
 }
 
