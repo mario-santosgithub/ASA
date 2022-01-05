@@ -5,21 +5,15 @@
 #include <algorithm>
 
 
-struct P1 {
-    int lastElement;
-    int length;
-};
-
 // Prototypes
 void problemOne();
-void getSolutionsP1(P1 number);
+void getSolutionsP1(int number);
 void problemTwo();
 void getSolutionsP2(int number);
 
 
 // Global variables
-std::vector<P1> sublists;
-std::vector<int> firstInput, aux;
+std::vector<int> firstInput, aux, ac, al;
 int maxLength = 0, counter=0, size1 = 1, size2 = 0;
 
 // Main function
@@ -40,14 +34,13 @@ int main() {
 void problemOne() {
 
     int f;
-    P1 numberP1;
     std::string str, temp;
     std::stringstream ss;
 
     std::cin >> f;
-    numberP1.lastElement = f;
-    numberP1.length = 1;
-    sublists.push_back(numberP1);
+    firstInput.push_back(f);
+    al.push_back(1);
+    ac.push_back(1);
 
     std::getline(std::cin, str);
     ss << str;
@@ -62,9 +55,11 @@ void problemOne() {
         ss >> temp;
   
         if (std::stringstream(temp) >> f) {
-            numberP1.lastElement = f;
-            numberP1.length = 1;
-            getSolutionsP1(numberP1);
+            al.push_back(1);
+            ac.push_back(1);
+            size1++;
+            getSolutionsP1(f);
+            firstInput.push_back(f);
         }
         temp = "";
     }
@@ -73,59 +68,30 @@ void problemOne() {
     return;    
 }
 
-void getSolutionsP1(P1 number) {
 
-    //printf("number: %d\n", number.lastElement);
-    int added = -1;
-    if (number.lastElement <= sublists[0].lastElement) {
-        sublists.insert(sublists.begin(), number); 
-        size1++;
-        if (maxLength == number.length) { counter++; }
-        //printf("added\n");
-        return; 
-    }
+void getSolutionsP1(int number) {
+    int len=1, count=1;
+    for (int i=0; i < size1-1; i++) {
 
-    for (int i=size1-1; i >= 0; i--) {
+        if (number > firstInput[i]) {
+            if (al[i] + 1 > len) {
 
-        if (number.lastElement > sublists[i].lastElement) {
-            if (added == -1 || sublists[i].length+1 >= added) {
-                //printf("maior\n");
-                number.length = sublists[i].length+1;
-                added = number.length; // adicionamos 7, e ficou com esta length armazenada agr em added 
-                //printf("added with lenght %d\n", number.length);
-                //printf("sublistELement: %d\n", sublists[i].lastElement);
-
-                size1++;
-            }
-            else {
-                break;
-            }
-
-            if (number.length > maxLength) { 
-                maxLength++;
-                counter = 1;
-                sublists.push_back(number);
-            }
-            else if (number.length == maxLength) {
-                counter++;
-                sublists.push_back(number);
-            }
-            else {
-                int j = size1-1;
-                while (number.length != sublists[j].length) {
-                    j--;
+                len = al[i] + 1;
+                count = ac[i];
+                if (len > maxLength) { 
+                    maxLength = len;
+                    counter = 0;
                 }
-                sublists.insert(sublists.begin()+j, number);
-
-
-                /*printf("n[i] %d\n", sublists[size-2].lastElement);
-                printf("number %d\n", number.lastElement);
-                numberP1 = sublists[size-2];
-                sublists[size-2] = number;
-                sublists[size-1] = numberP1;*/
+            }
+            else if (al[i] + 1 == len) {
+                count += ac[i];
             }
         }
     }
+    al[size1-1] = len;
+    ac[size1-1] = count;
+
+    if (len == maxLength) { counter += count; }
 }
 
 void problemTwo() {
@@ -188,8 +154,6 @@ void getSolutionsP2(int number) {
     for (int i=0; i < size1; i++) {
         
         if (number == firstInput[i] && length+1 > aux[i]) {
-            //printf("number: %d\n", number);
-            //printf("firstInput: %d\n", firstInput[i]);
             aux[i] = length + 1;
             
         }
