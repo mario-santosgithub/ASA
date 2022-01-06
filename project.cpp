@@ -2,7 +2,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
-#include <algorithm>
+#include <unordered_map>
 
 
 // Prototypes
@@ -13,6 +13,7 @@ void getSolutionsP2(int number);
 
 
 // Global variables
+std::unordered_map<int, int> umap;
 std::vector<int> firstInput, aux, ac, al;
 int maxLength = 0, counter=0, size1 = 1, size2 = 0;
 
@@ -101,6 +102,7 @@ void problemTwo() {
     std::stringstream ss, ss1;
     std::cin >> f;
     firstInput.push_back(f);
+    umap[f] = f;
     aux.push_back(0);
 
     std::getline(std::cin, str);
@@ -111,6 +113,7 @@ void problemTwo() {
         ss >> temp;
         if (std::stringstream(temp) >> f) {
             firstInput.push_back(f);
+            umap[f] = f;
             size1++;
             aux.push_back(0);
         }
@@ -130,7 +133,7 @@ void problemTwo() {
     while(!ss1.eof()) {
         ss1 >> temp;
         if (std::stringstream(temp) >> f) {
-            if(std::find(firstInput.begin(), firstInput.end(), f) != firstInput.end()) {
+            if(umap.find(f) != umap.end()) {
                 getSolutionsP2(f);
                 size2++;
             }
