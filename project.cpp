@@ -1,3 +1,11 @@
+/*
+Primeiro projeto de ASA 2021/2022
+Grupo al015
+Ines Duarte e Mario Santos
+*/
+
+
+
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -139,12 +147,13 @@ void getSolutionsP2(int number) {
     
     int length = 0;
     for (int i=0; i < size1; i++) {
-        
+        // if found in first sequence and can increase the lenght
         if (number == firstInput[i] && length+1 > aux[i]) {
             aux[i] = length + 1;
             if (length+1 > maxLength) {maxLength = length+1;}
             
         }
+        // if its bigger and the current length is smaller than the stored one
         if (number > firstInput[i] && aux[i] > length) {
             length = aux[i];
 
