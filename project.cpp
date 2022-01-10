@@ -53,7 +53,7 @@ void problemOne() {
         }
         temp = ""; // reset the string
     }
-
+    
     std::cout << maxLength << " " << counter << std::endl;
     return;
 }
@@ -91,7 +91,7 @@ void problemTwo() {
     std::string str, temp;
     std::stringstream ss, ss1;
     std::unordered_map<int, int> umap; //used to save the first input values
-
+    maxLength = 0;
     std::cin >> number;
     firstInput.push_back(number);
     umap[number] = number;
@@ -134,7 +134,7 @@ void problemTwo() {
     std::cout << maxLength << std::endl;
 }
 
-// Funtion to get solution to problem two
+// Funtion to get the solution to problem two
 void getSolutionsP2(int number) {
     
     int length = 0;
@@ -146,8 +146,6 @@ void getSolutionsP2(int number) {
             
         }
         if (number > firstInput[i] && aux[i] > length) {
-            //printf("number: %d\n", number);
-            //printf("firstInput: %d\n", firstInput[i]);
             length = aux[i];
 
         }
