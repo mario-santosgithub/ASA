@@ -1,7 +1,8 @@
 /*
 Primeiro projeto de ASA 2021/2022
+
 Grupo al015
-Ines Duarte e Mario Santos
+Ines Duarte (99237) e Mario Santos (99275)
 */
 
 
