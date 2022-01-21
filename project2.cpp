@@ -25,6 +25,7 @@ vector<vector<int>> graph;
 int main() {
 
     int arcs, x , y; //arcos (m) input x (v1) e y (v2)
+    int counter=0;
 
     cin >> targetV1 >> targetV2;
     cin >> vertices >> arcs; 
@@ -39,9 +40,8 @@ int main() {
     if (arcs < 0) { invalid++; }
     if (vertices < 1) { invalid++; }
 
-    for (int i=0; i < arcs; i++) {
-        cin >> x >> y; // x is the parent of y
-
+    while (cin >> x >> y) {
+        counter++;
         if (graph[y-1][0] < 2 && invalid == 0) {
 
             graph[y-1][0]++; // number of parrents of this vertice
@@ -52,6 +52,7 @@ int main() {
         // we cant add more
 
     }
+    if (counter != arcs) {invalid++;}
     if (invalid != 0) { cout << "0" << endl; return 0; }
 
     //verify if cicles exist for every node(i) in vector
@@ -100,7 +101,10 @@ void graphVerify(int nodeNum) {
 }
 
 
-void getSolutions1(int nodeNum){ 
+void getSolutions1(int nodeNum){
+
+
+    if (graph[nodeNum-1][3] == WHITE) { return; }
 
     if (graph[nodeNum-1][3] == BLACK) {
         graph[nodeNum-1][3] = WHITE;
@@ -114,6 +118,15 @@ void getSolutions1(int nodeNum){
 
 void getSolutions2(int nodeNum){
 
+    /*printf("\n");
+    printf("====== FUNC 2 ========\n");
+    printf("node: %d\n", nodeNum);
+    printf("status:   ");
+    for (int k: graph[nodeNum-1]) {printf("%d ", k);}
+    printf("\n");*/
+
+
+    if (graph[nodeNum-1][3] == GRAY) { return; }
     // a possible solution
     if( graph[nodeNum-1][3] == WHITE){
         graph[nodeNum-1][3] = PURPLE;
@@ -122,6 +135,7 @@ void getSolutions2(int nodeNum){
             getSolutions3(graph[nodeNum-1][i]);
         }
     }
+
     if (graph[nodeNum-1][3] == BLACK) {
         for (int i=1; i <= graph[nodeNum-1][0]; i++) {
             getSolutions2(graph[nodeNum-1][i]);
@@ -133,12 +147,19 @@ void getSolutions2(int nodeNum){
 
 void getSolutions3(int nodeNum) {
 
+    /*printf("\n");
+    printf("====== FUNC 3 ========\n");
+    printf("node: %d\n", nodeNum);
+    printf("status:   ");
+    for (int k: graph[nodeNum-1]) {printf("%d ", k);}
+    printf("\n");*/
+
     //far common ancestors
     if( graph[nodeNum-1][3] == WHITE || graph[nodeNum-1][3] == PURPLE){
         graph[nodeNum-1][3] = GRAY;
     }
 
     for( int i=1; i <= graph[nodeNum-1][0]; i++){
-        getSolutions1(graph[nodeNum-1][i]);
+        getSolutions3(graph[nodeNum-1][i]);
     }
 }
