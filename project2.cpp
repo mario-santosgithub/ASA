@@ -97,7 +97,6 @@ void graphVerify(int nodeNum) {
     }
     //after all parents visited, white turns black
     graph[nodeNum-1][3] = BLACK;
-
 }
 
 
@@ -117,14 +116,6 @@ void getSolutions1(int nodeNum){
 }
 
 void getSolutions2(int nodeNum){
-
-    /*printf("\n");
-    printf("====== FUNC 2 ========\n");
-    printf("node: %d\n", nodeNum);
-    printf("status:   ");
-    for (int k: graph[nodeNum-1]) {printf("%d ", k);}
-    printf("\n");*/
-
 
     if (graph[nodeNum-1][3] == GRAY) { return; }
     // a possible solution
@@ -147,14 +138,9 @@ void getSolutions2(int nodeNum){
 
 void getSolutions3(int nodeNum) {
 
-    /*printf("\n");
-    printf("====== FUNC 3 ========\n");
-    printf("node: %d\n", nodeNum);
-    printf("status:   ");
-    for (int k: graph[nodeNum-1]) {printf("%d ", k);}
-    printf("\n");*/
-
     //far common ancestors
+    if (graph[nodeNum-1][3] == GRAY) {return;}
+
     if( graph[nodeNum-1][3] == WHITE || graph[nodeNum-1][3] == PURPLE){
         graph[nodeNum-1][3] = GRAY;
     }
