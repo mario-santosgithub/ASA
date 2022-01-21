@@ -1,3 +1,8 @@
+/*
+    Segundo projeto de ASA
+    grupo: al015 Ines Duarte e Mario Santos
+*/
+
 #include <iostream>
 #include <vector>
 
@@ -78,7 +83,6 @@ int main() {
     return 0;
 }
 
-
 // its called for every node in the graph
 // Function that verifies if the graph is valid
 void graphVerify(int nodeNum) {
@@ -102,7 +106,6 @@ void graphVerify(int nodeNum) {
 
 void getSolutions1(int nodeNum){
 
-
     if (graph[nodeNum-1][3] == WHITE) { return; }
 
     if (graph[nodeNum-1][3] == BLACK) {
@@ -112,7 +115,6 @@ void getSolutions1(int nodeNum){
     for( int i=1; i <= graph[nodeNum-1][0]; i++){
         getSolutions1(graph[nodeNum-1][i]);
     }
-
 }
 
 void getSolutions2(int nodeNum){
@@ -132,8 +134,6 @@ void getSolutions2(int nodeNum){
             getSolutions2(graph[nodeNum-1][i]);
         }
     }
-
-
 }
 
 void getSolutions3(int nodeNum) {
