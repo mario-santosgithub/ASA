@@ -28,6 +28,7 @@ vector<vector<int>> graph;
 
 // Main function
 int main() {
+    ios::sync_with_stdio(false);
 
     int arcs, x , y; //arcos (m) input x (v1) e y (v2)
     int counter=0;
@@ -141,7 +142,7 @@ void getSolutions3(int nodeNum) {
     //far common ancestors
     if (graph[nodeNum-1][3] == GRAY) {return;}
 
-    if( graph[nodeNum-1][3] == WHITE || graph[nodeNum-1][3] == PURPLE){
+    if ( graph[nodeNum-1][3] == WHITE || graph[nodeNum-1][3] == PURPLE){
         graph[nodeNum-1][3] = GRAY;
     }
 
